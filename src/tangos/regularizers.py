@@ -1,10 +1,11 @@
 import torch
 import numpy as np
 
-device  = 'cuda:0'
+device = "cuda:0"
+
 
 def l1(model):
-    l1_regularisation = 0.
+    l1_regularisation = 0.0
     for param in model.parameters():
         l1_regularisation += param.abs().sum()
     return l1_regularisation
@@ -13,16 +14,17 @@ def l1(model):
 def add_input_noise(input, std, mean=0):
     return input + torch.randn(input.size()).to(device) * std + mean
 
+
 # adapted from https://github.com/facebookresearch/mixup-cifar10/blob/main/train.py
-def mixup_data(x, y, alpha=1.0, device='cpu'):
-    '''Returns mixed inputs, pairs of targets, and lambda'''
+def mixup_data(x, y, alpha=1.0, device="cpu"):
+    """Returns mixed inputs, pairs of targets, and lambda"""
     if alpha > 0:
         lam = np.random.beta(alpha, alpha)
     else:
         lam = 1
 
     batch_size = x.size()[0]
-    if device=='cuda':
+    if device == "cuda":
         index = torch.randperm(batch_size).cuda()
     else:
         index = torch.randperm(batch_size)

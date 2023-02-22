@@ -13,6 +13,7 @@ __pycache__/*
 .*.swp
 */.ipynb_checkpoints/*
 .DS_Store
+*.DS_Store
 
 # Project files
 .ropeproject
@@ -56,6 +57,7 @@ MANIFEST
 # Project Specific
 # contents directory contents
 src/tangos/experiments/**/content/*
+
 
 # Data
 data/*
