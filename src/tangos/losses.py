@@ -1,8 +1,7 @@
-import torch
 import numpy as np
+import torch
 import torch.nn as nn
-from functorch import jacrev
-from functorch import vmap
+from functorch import jacrev, vmap
 
 
 def MSE(output, label):
@@ -37,7 +36,8 @@ def weight_correlation(weights, device="cpu"):
     for neuron_i in range(1, h_dim):
         for neuron_j in range(0, neuron_i):
             pairwise_corr = cosine_similarity(
-                weights[neuron_i, :], weights[neuron_j, :]
+                weights[neuron_i, :],
+                weights[neuron_j, :],
             )
             weight_corr = weight_corr + pairwise_corr.norm(p=1)
 
@@ -80,7 +80,8 @@ def attr_loss(forward_func, data_input, device="cpu", subsample=-1):
         ]
         for tensor_pair in tensor_pairs:
             pairwise_corr = cos(
-                neuron_attr[tensor_pair[0], :, :], neuron_attr[tensor_pair[1], :, :]
+                neuron_attr[tensor_pair[0], :, :],
+                neuron_attr[tensor_pair[1], :, :],
             ).norm(p=1)
             correlation_loss = correlation_loss + pairwise_corr
 
@@ -90,7 +91,8 @@ def attr_loss(forward_func, data_input, device="cpu", subsample=-1):
         for neuron_i in range(1, h_dim):
             for neuron_j in range(0, neuron_i):
                 pairwise_corr = cos(
-                    neuron_attr[neuron_i, :, :], neuron_attr[neuron_j, :, :]
+                    neuron_attr[neuron_i, :, :],
+                    neuron_attr[neuron_j, :, :],
                 ).norm(p=1)
                 correlation_loss = correlation_loss + pairwise_corr
         num_pairs = h_dim * (h_dim - 1) / 2

@@ -1,15 +1,15 @@
-from functorch import jacrev
-from functorch import vmap
-from torch import optim
+import json
+
 import numpy as np
-from sklearn.experimental import enable_iterative_imputer  # noqa: F401,E402
 import pandas as pd
-from torch.utils.data import Dataset, DataLoader, TensorDataset
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
 import torch
 import torch.nn as nn
-import json
+from functorch import jacrev, vmap
+from sklearn.experimental import enable_iterative_imputer  # noqa: F401,E402
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from torch import optim
+from torch.utils.data import DataLoader, Dataset, TensorDataset
 
 d = pd.read_csv("path/to/data/dionis", header=None)
 TRAINING_RATIO = 0.1  # change this for different ratios of training data
@@ -21,10 +21,16 @@ X = d.iloc[:, 1:]
 SEED = 0
 BATCH_SIZE = 256
 X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, random_state=SEED
+    X,
+    y,
+    test_size=0.2,
+    random_state=SEED,
 )
 X_train, X_val, y_train, y_val = train_test_split(
-    X_train, y_train, test_size=0.2, random_state=SEED
+    X_train,
+    y_train,
+    test_size=0.2,
+    random_state=SEED,
 )
 
 
@@ -42,11 +48,17 @@ val_dataset = TensorDataset(torch.Tensor(X_val), torch.Tensor(y_val.to_numpy()))
 test_dataset = TensorDataset(torch.Tensor(X_test), torch.Tensor(y_test.to_numpy()))
 loaders = {
     "train": DataLoader(
-        train_dataset, batch_size=BATCH_SIZE, shuffle=True, num_workers=1
+        train_dataset,
+        batch_size=BATCH_SIZE,
+        shuffle=True,
+        num_workers=1,
     ),
     "val": DataLoader(val_dataset, batch_size=BATCH_SIZE, shuffle=False, num_workers=1),
     "test": DataLoader(
-        test_dataset, batch_size=int(BATCH_SIZE), shuffle=False, num_workers=1
+        test_dataset,
+        batch_size=int(BATCH_SIZE),
+        shuffle=False,
+        num_workers=1,
     ),
 }
 
@@ -115,7 +127,8 @@ def attr_loss(forward_func, data_input, device="cpu", subsample=-1):
         ]
         for tensor_pair in tensor_pairs:
             pairwise_corr = cos(
-                neuron_attr[tensor_pair[0], :, :], neuron_attr[tensor_pair[1], :, :]
+                neuron_attr[tensor_pair[0], :, :],
+                neuron_attr[tensor_pair[1], :, :],
             ).norm(p=1)
             correlation_loss = correlation_loss + pairwise_corr
 
@@ -125,7 +138,8 @@ def attr_loss(forward_func, data_input, device="cpu", subsample=-1):
         for neuron_i in range(1, h_dim):
             for neuron_j in range(0, neuron_i):
                 pairwise_corr = cos(
-                    neuron_attr[neuron_i, :, :], neuron_attr[neuron_j, :, :]
+                    neuron_attr[neuron_i, :, :],
+                    neuron_attr[neuron_j, :, :],
                 ).norm(p=1)
                 correlation_loss = correlation_loss + pairwise_corr
         num_pairs = h_dim * (h_dim - 1) / 2
@@ -156,7 +170,10 @@ def train_epoch(
 
         if lambda_1 + lambda_2 > 0:
             sparsity_loss, correlation_loss = attr_loss(
-                model, data, device=device, subsample=subsample
+                model,
+                data,
+                device=device,
+                subsample=subsample,
             )
         else:
             sparsity_loss, correlation_loss = 0, 0
@@ -170,8 +187,11 @@ def train_epoch(
         if (i + 1) % 100 == 0:
             print(
                 "Epoch [{}], Step [{}/{}], Loss: {:.4f}".format(
-                    epoch + 1, i + 1, len(loader), running_loss / (i + 1)
-                )
+                    epoch + 1,
+                    i + 1,
+                    len(loader),
+                    running_loss / (i + 1),
+                ),
             )
             print(f"Lambda1: {lambda_1}, Lambda2: {lambda_2}")
 
@@ -201,7 +221,10 @@ def evaluate(
         pred_loss = loss_func(output.squeeze(), label)
 
         sparsity_loss, correlation_loss = attr_loss(
-            model, data, device=device, subsample=subsample
+            model,
+            data,
+            device=device,
+            subsample=subsample,
         )
 
         loss = pred_loss + lambda_1 * sparsity_loss + lambda_2 * correlation_loss
@@ -223,7 +246,7 @@ def evaluate(
         f"[Test] Epoch: {epoch + 1}, accuracy: {accuracy:.4f}, "
         f"average test loss: {average_loss:.4f}, "
         f"pred loss: {averge_pred_loss:.4f}, "
-        f"sparsity loss: {sparsity_loss.item():.4f}, correlation loss: {correlation_loss.item():.4f}"
+        f"sparsity loss: {sparsity_loss.item():.4f}, correlation loss: {correlation_loss.item():.4f}",
     )
 
     return averge_pred_loss, accuracy
@@ -251,13 +274,15 @@ def train_full(seed, lambda_1, lambda_2, LR=0):
         torch.random.manual_seed(seed)
 
         model = UCI_MLP(num_features, num_outputs, dropout=0, batch_norm=False).to(
-            DEVICE
+            DEVICE,
         )
         print(f"Training on {DEVICE}...")
 
         loss_func = nn.CrossEntropyLoss()
         optimiser = optim.Adam(
-            model.parameters(), lr=learning_rate, weight_decay=weight_decay
+            model.parameters(),
+            lr=learning_rate,
+            weight_decay=weight_decay,
         )
 
         patience = 0
@@ -290,7 +315,7 @@ def train_full(seed, lambda_1, lambda_2, LR=0):
             if epoch >= min_epoch:
                 if best_acc < accuracy:
                     print(
-                        f"Epoch {epoch + 1} - Validation performance improved, saving model..."
+                        f"Epoch {epoch + 1} - Validation performance improved, saving model...",
                     )
                     best_acc = accuracy
                     torch.save(model.state_dict(), model_save_path)
@@ -300,7 +325,7 @@ def train_full(seed, lambda_1, lambda_2, LR=0):
 
             if patience == TRAINING_PATIENCE:
                 print(
-                    f"Epoch {epoch + 1} - Early stopping since no improvement after {patience} epochs"
+                    f"Epoch {epoch + 1} - Early stopping since no improvement after {patience} epochs",
                 )
                 break
 

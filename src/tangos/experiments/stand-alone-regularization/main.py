@@ -1,21 +1,22 @@
-import os
-import torch
-import itertools
 import argparse
-import json
 import copy
-from pathlib import Path
-import numpy as np
+import itertools
+import json
+import os
 import random
-import torch.nn as nn
-from torch import optim
-from sklearn.model_selection import KFold
-from tangos.losses import parameter_schedule, attr_loss, MSE
-from tangos.models import UCI_MLP
-from tangos.regularizers import l1, add_input_noise, mixup_data, mixup_criterion
-from tangos import load_data
-
 import warnings
+from pathlib import Path
+
+import numpy as np
+import torch
+import torch.nn as nn
+from sklearn.model_selection import KFold
+from torch import optim
+
+from tangos import load_data
+from tangos.losses import MSE, attr_loss, parameter_schedule
+from tangos.models import UCI_MLP
+from tangos.regularizers import add_input_noise, l1, mixup_criterion, mixup_data
 
 warnings.filterwarnings("ignore")
 
@@ -27,7 +28,13 @@ DEVICE = "cuda:0"
 
 
 def train_epoch(
-    model, train_loader, optimiser, loss_func, params, regulariser, device="cpu"
+    model,
+    train_loader,
+    optimiser,
+    loss_func,
+    params,
+    regulariser,
+    device="cpu",
 ):
     reg_loss = 0
     for i, (data, label) in enumerate(train_loader):
@@ -43,7 +50,10 @@ def train_epoch(
             params["lambda_1_curr"] > 0 or params["lambda_2_curr"] > 0
         ):
             sparsity_loss, correlation_loss = attr_loss(
-                model, data, device=device, subsample=params["subsample"]
+                model,
+                data,
+                device=device,
+                subsample=params["subsample"],
             )
             reg_loss = (
                 params["lambda_1_curr"] * sparsity_loss
@@ -55,7 +65,10 @@ def train_epoch(
 
         elif regulariser == "mixup":
             X_mixup, y_a, y_b, lam = mixup_data(
-                data, label, alpha=params["alpha"], device=device
+                data,
+                label,
+                alpha=params["alpha"],
+                device=device,
             )
             output_mixup, _ = model(X_mixup)
             reg_loss = mixup_criterion(loss_func, output_mixup, y_a, y_b, lam)
@@ -161,11 +174,15 @@ def run_fold(fold_name, model, trainloader, valloader, config, config_dataset, s
     loss_func = MSE if config_dataset["type"] == "regression" else nn.CrossEntropyLoss()
     l2_weight = config["weight"] if regulariser == "l2" else 0
     optimiser = optim.Adam(
-        model.parameters(), lr=config_dataset["lr"], weight_decay=l2_weight
+        model.parameters(),
+        lr=config_dataset["lr"],
+        weight_decay=l2_weight,
     )
     if regulariser == "TANGOS":
         parameter_scheduler = parameter_schedule(
-            config["lambda_1"], config["lambda_2"], config["param_schedule"]
+            config["lambda_1"],
+            config["lambda_2"],
+            config["param_schedule"],
         )
     else:
         parameter_scheduler = None
@@ -178,7 +195,13 @@ def run_fold(fold_name, model, trainloader, valloader, config, config_dataset, s
             config["lambda_2_curr"] = lambda_2
 
         model = train_epoch(
-            model, trainloader, optimiser, loss_func, config, regulariser, device=DEVICE
+            model,
+            trainloader,
+            optimiser,
+            loss_func,
+            config,
+            regulariser,
+            device=DEVICE,
         )
         val_loss, _ = evaluate(model, valloader, loss_func, device=DEVICE)
 
@@ -200,7 +223,11 @@ def run_fold(fold_name, model, trainloader, valloader, config, config_dataset, s
 
 
 def run_cv(
-    config_dataset: dict, regulariser: str, params: dict, run_name: str, seed: int
+    config_dataset: dict,
+    regulariser: str,
+    params: dict,
+    run_name: str,
+    seed: int,
 ):
     data_fetcher = getattr(load_data, config_dataset["loader"])
     loaders = data_fetcher(seed=0)
@@ -213,7 +240,10 @@ def run_cv(
         torch.manual_seed(seed)
         np.random.seed(seed)
         trainloader, valloader = ids_to_dataloader_split(
-            loaders["train"], train_ids, val_ids, seed=seed
+            loaders["train"],
+            train_ids,
+            val_ids,
+            seed=seed,
         )
         fold_name = run_name + f":{fold}"
         model = UCI_MLP(
@@ -223,7 +253,13 @@ def run_cv(
             batch_norm=batch_norm,
         ).to(DEVICE)
         fold_loss, fold_model, fold_epoch = run_fold(
-            fold_name, model, trainloader, valloader, params, config_dataset, seed=seed
+            fold_name,
+            model,
+            trainloader,
+            valloader,
+            params,
+            config_dataset,
+            seed=seed,
         )
         if fold_loss < best_loss:
             best_loss = fold_loss
@@ -282,7 +318,9 @@ def run_experiment(seeds: list, tag: str):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "-seeds", default=[0], help="Set of seeds to use for experiments"
+        "-seeds",
+        default=[0],
+        help="Set of seeds to use for experiments",
     )
     parser.add_argument("-tag", default="tag", help="Tag name for set of experiments")
     args = parser.parse_args()

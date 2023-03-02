@@ -1,13 +1,14 @@
-import arff
+import json
 import os
 import re
-import torch
-import pandas as pd
+
+import arff
 import numpy as np
-from torch.utils.data import Dataset, DataLoader, TensorDataset
+import pandas as pd
+import torch
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-import json
+from torch.utils.data import DataLoader, Dataset, TensorDataset
 
 
 def get_path():
@@ -26,7 +27,10 @@ def load_wine(seed, train_prop=0.8, batch_size=64):
     y = data.quality
     X, y = X.to_numpy(), y.to_numpy()
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, train_size=train_prop, random_state=seed
+        X,
+        y,
+        train_size=train_prop,
+        random_state=seed,
     )
 
     X_scaler = StandardScaler()
@@ -42,7 +46,10 @@ def load_wine(seed, train_prop=0.8, batch_size=64):
     loaders = {
         "train": train_dataset,
         "test": DataLoader(
-            test_dataset, batch_size=batch_size, shuffle=False, num_workers=1
+            test_dataset,
+            batch_size=batch_size,
+            shuffle=False,
+            num_workers=1,
         ),
     }
     return loaders
@@ -59,7 +66,10 @@ def load_facebook(seed, train_prop=0.8, batch_size=64):
     X, y = X.to_numpy(), y.to_numpy()
 
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, train_size=train_prop, random_state=seed
+        X,
+        y,
+        train_size=train_prop,
+        random_state=seed,
     )
 
     X_scaler = StandardScaler()
@@ -75,7 +85,10 @@ def load_facebook(seed, train_prop=0.8, batch_size=64):
     loaders = {
         "train": train_dataset,
         "test": DataLoader(
-            test_dataset, batch_size=batch_size, shuffle=False, num_workers=1
+            test_dataset,
+            batch_size=batch_size,
+            shuffle=False,
+            num_workers=1,
         ),
     }
     return loaders
@@ -106,7 +119,10 @@ def load_bioconcentration(seed, train_prop=0.8, batch_size=64):
     X, y = X.to_numpy(), y.to_numpy()
 
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, train_size=train_prop, random_state=seed
+        X,
+        y,
+        train_size=train_prop,
+        random_state=seed,
     )
 
     X_scaler = StandardScaler()
@@ -122,7 +138,10 @@ def load_bioconcentration(seed, train_prop=0.8, batch_size=64):
     loaders = {
         "train": train_dataset,
         "test": DataLoader(
-            test_dataset, batch_size=batch_size, shuffle=False, num_workers=1
+            test_dataset,
+            batch_size=batch_size,
+            shuffle=False,
+            num_workers=1,
         ),
     }
     return loaders
@@ -159,7 +178,10 @@ def load_student(seed, train_prop=0.8, batch_size=64):
     X, y = X.to_numpy(), y.to_numpy()
 
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, train_size=train_prop, random_state=seed
+        X,
+        y,
+        train_size=train_prop,
+        random_state=seed,
     )
 
     X_scaler = StandardScaler()
@@ -175,7 +197,10 @@ def load_student(seed, train_prop=0.8, batch_size=64):
     loaders = {
         "train": train_dataset,
         "test": DataLoader(
-            test_dataset, batch_size=batch_size, shuffle=False, num_workers=1
+            test_dataset,
+            batch_size=batch_size,
+            shuffle=False,
+            num_workers=1,
         ),
     }
     return loaders
@@ -185,7 +210,8 @@ def load_abalone(seed, train_prop=0.8, batch_size=64):
     data = pd.read_csv(get_path() + "abalone.data", sep=",", header=None)
     data = data[:1000]
     one_hot = pd.get_dummies(
-        data[0], drop_first=True
+        data[0],
+        drop_first=True,
     )  # onehotencode categorical column
     data = data.drop(0, axis=1)
     data = data.join(one_hot)
@@ -196,7 +222,10 @@ def load_abalone(seed, train_prop=0.8, batch_size=64):
     X, y = X.to_numpy(), y.to_numpy()
 
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, train_size=train_prop, random_state=seed
+        X,
+        y,
+        train_size=train_prop,
+        random_state=seed,
     )
 
     X_scaler = StandardScaler()
@@ -212,7 +241,10 @@ def load_abalone(seed, train_prop=0.8, batch_size=64):
     loaders = {
         "train": train_dataset,
         "test": DataLoader(
-            test_dataset, batch_size=batch_size, shuffle=False, num_workers=1
+            test_dataset,
+            batch_size=batch_size,
+            shuffle=False,
+            num_workers=1,
         ),
     }
     return loaders
@@ -229,7 +261,10 @@ def load_skillcraft(seed, train_prop=0.8, batch_size=64):
     X, y = X.to_numpy(), y.to_numpy()
 
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, train_size=train_prop, random_state=seed
+        X,
+        y,
+        train_size=train_prop,
+        random_state=seed,
     )
 
     X_scaler = StandardScaler()
@@ -245,7 +280,10 @@ def load_skillcraft(seed, train_prop=0.8, batch_size=64):
     loaders = {
         "train": train_dataset,
         "test": DataLoader(
-            test_dataset, batch_size=batch_size, shuffle=False, num_workers=1
+            test_dataset,
+            batch_size=batch_size,
+            shuffle=False,
+            num_workers=1,
         ),
     }
     return loaders
@@ -256,7 +294,8 @@ def load_weather(seed, train_prop=0.8, batch_size=64):
     data = data.dropna()
     data = data[:1000]
     one_hot = pd.get_dummies(
-        data["station"], drop_first=True
+        data["station"],
+        drop_first=True,
     )  # onehotencode categorical column
     data = data.drop("station", axis=1)
     data = data.join(one_hot)
@@ -266,7 +305,10 @@ def load_weather(seed, train_prop=0.8, batch_size=64):
     X, y = X.to_numpy(), y.to_numpy()
 
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, train_size=train_prop, random_state=seed
+        X,
+        y,
+        train_size=train_prop,
+        random_state=seed,
     )
 
     X_scaler = StandardScaler()
@@ -282,7 +324,10 @@ def load_weather(seed, train_prop=0.8, batch_size=64):
     loaders = {
         "train": train_dataset,
         "test": DataLoader(
-            test_dataset, batch_size=batch_size, shuffle=False, num_workers=1
+            test_dataset,
+            batch_size=batch_size,
+            shuffle=False,
+            num_workers=1,
         ),
     }
     return loaders
@@ -293,7 +338,9 @@ def load_forest(seed, train_prop=0.8, batch_size=64):
     X = data.drop("area", axis=1)
     for var in ["X", "Y", "month", "day"]:
         one_hot = pd.get_dummies(
-            X[var], prefix=var, drop_first=True
+            X[var],
+            prefix=var,
+            drop_first=True,
         )  # onehotencode categorical column
         X = X.drop(var, axis=1)
         X = X.join(one_hot)
@@ -302,7 +349,10 @@ def load_forest(seed, train_prop=0.8, batch_size=64):
     X, y = X.to_numpy(), y.to_numpy()
 
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, train_size=train_prop, random_state=seed
+        X,
+        y,
+        train_size=train_prop,
+        random_state=seed,
     )
 
     X_scaler = StandardScaler()
@@ -318,7 +368,10 @@ def load_forest(seed, train_prop=0.8, batch_size=64):
     loaders = {
         "train": train_dataset,
         "test": DataLoader(
-            test_dataset, batch_size=batch_size, shuffle=False, num_workers=1
+            test_dataset,
+            batch_size=batch_size,
+            shuffle=False,
+            num_workers=1,
         ),
     }
     return loaders
@@ -333,7 +386,10 @@ def load_protein(seed, train_prop=0.8, batch_size=64):
     X, y = X.to_numpy(), y.to_numpy()
 
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, train_size=train_prop, random_state=seed
+        X,
+        y,
+        train_size=train_prop,
+        random_state=seed,
     )
 
     X_scaler = StandardScaler()
@@ -349,7 +405,10 @@ def load_protein(seed, train_prop=0.8, batch_size=64):
     loaders = {
         "train": train_dataset,
         "test": DataLoader(
-            test_dataset, batch_size=batch_size, shuffle=False, num_workers=1
+            test_dataset,
+            batch_size=batch_size,
+            shuffle=False,
+            num_workers=1,
         ),
     }
     return loaders
@@ -362,7 +421,9 @@ def load_heart(seed, train_prop=0.8, batch_size=64):
     data[9] = np.log(data[9] + 1)
     for var in [1, 2, 5, 6, 8, 10, 11, 12]:
         one_hot = pd.get_dummies(
-            X[var], prefix=var, drop_first=True
+            X[var],
+            prefix=var,
+            drop_first=True,
         )  # onehotencode categorical column
         X = X.drop(var, axis=1)
         X = X.join(one_hot)
@@ -370,7 +431,10 @@ def load_heart(seed, train_prop=0.8, batch_size=64):
     X, y = X.to_numpy(), y.to_numpy()
 
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, train_size=train_prop, random_state=seed
+        X,
+        y,
+        train_size=train_prop,
+        random_state=seed,
     )
 
     X_scaler = StandardScaler()
@@ -378,16 +442,21 @@ def load_heart(seed, train_prop=0.8, batch_size=64):
     X_test = X_scaler.transform(X_test)
 
     train_dataset = TensorDataset(
-        torch.Tensor(X_train), torch.tensor(y_train, dtype=torch.long)
+        torch.Tensor(X_train),
+        torch.tensor(y_train, dtype=torch.long),
     )
     test_dataset = TensorDataset(
-        torch.Tensor(X_test), torch.tensor(y_test, dtype=torch.long)
+        torch.Tensor(X_test),
+        torch.tensor(y_test, dtype=torch.long),
     )
 
     loaders = {
         "train": train_dataset,
         "test": DataLoader(
-            test_dataset, batch_size=batch_size, shuffle=False, num_workers=1
+            test_dataset,
+            batch_size=batch_size,
+            shuffle=False,
+            num_workers=1,
         ),
     }
     return loaders
@@ -403,7 +472,10 @@ def load_breast(seed, train_prop=0.8, batch_size=64):
     X, y = X.to_numpy(), y.to_numpy()
 
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, train_size=train_prop, random_state=seed
+        X,
+        y,
+        train_size=train_prop,
+        random_state=seed,
     )
 
     X_scaler = StandardScaler()
@@ -411,16 +483,21 @@ def load_breast(seed, train_prop=0.8, batch_size=64):
     X_test = X_scaler.transform(X_test)
 
     train_dataset = TensorDataset(
-        torch.Tensor(X_train), torch.tensor(y_train, dtype=torch.long)
+        torch.Tensor(X_train),
+        torch.tensor(y_train, dtype=torch.long),
     )
     test_dataset = TensorDataset(
-        torch.Tensor(X_test), torch.tensor(y_test, dtype=torch.long)
+        torch.Tensor(X_test),
+        torch.tensor(y_test, dtype=torch.long),
     )
 
     loaders = {
         "train": train_dataset,
         "test": DataLoader(
-            test_dataset, batch_size=batch_size, shuffle=False, num_workers=1
+            test_dataset,
+            batch_size=batch_size,
+            shuffle=False,
+            num_workers=1,
         ),
     }
     return loaders
@@ -495,7 +572,9 @@ def load_cervical(seed, train_prop=0.8, batch_size=64):
         "Dx",
     ]:
         one_hot = pd.get_dummies(
-            X[var], prefix=var, drop_first=True
+            X[var],
+            prefix=var,
+            drop_first=True,
         )  # onehotencode categorical column
         X = X.drop(var, axis=1)
         X = X.join(one_hot)
@@ -503,7 +582,10 @@ def load_cervical(seed, train_prop=0.8, batch_size=64):
     X, y = X.to_numpy(), y.to_numpy()
 
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, train_size=train_prop, random_state=seed
+        X,
+        y,
+        train_size=train_prop,
+        random_state=seed,
     )
 
     X_scaler = StandardScaler()
@@ -511,16 +593,21 @@ def load_cervical(seed, train_prop=0.8, batch_size=64):
     X_test = X_scaler.transform(X_test)
 
     train_dataset = TensorDataset(
-        torch.Tensor(X_train), torch.tensor(y_train, dtype=torch.long)
+        torch.Tensor(X_train),
+        torch.tensor(y_train, dtype=torch.long),
     )
     test_dataset = TensorDataset(
-        torch.Tensor(X_test), torch.tensor(y_test, dtype=torch.long)
+        torch.Tensor(X_test),
+        torch.tensor(y_test, dtype=torch.long),
     )
 
     loaders = {
         "train": train_dataset,
         "test": DataLoader(
-            test_dataset, batch_size=batch_size, shuffle=False, num_workers=1
+            test_dataset,
+            batch_size=batch_size,
+            shuffle=False,
+            num_workers=1,
         ),
     }
     return loaders
@@ -540,7 +627,9 @@ def load_credit(seed, train_prop=0.8, batch_size=64):
     y.replace(mapping, inplace=True)
     for var in [0, 3, 4, 5, 6, 8, 9, 11, 12]:
         one_hot = pd.get_dummies(
-            X[var], prefix=var, drop_first=True
+            X[var],
+            prefix=var,
+            drop_first=True,
         )  # onehotencode categorical column
         X = X.drop(var, axis=1)
         X = X.join(one_hot)
@@ -548,7 +637,10 @@ def load_credit(seed, train_prop=0.8, batch_size=64):
     X, y = X.to_numpy(), y.to_numpy()
 
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, train_size=train_prop, random_state=seed
+        X,
+        y,
+        train_size=train_prop,
+        random_state=seed,
     )
 
     X_scaler = StandardScaler()
@@ -556,16 +648,21 @@ def load_credit(seed, train_prop=0.8, batch_size=64):
     X_test = X_scaler.transform(X_test)
 
     train_dataset = TensorDataset(
-        torch.Tensor(X_train), torch.tensor(y_train, dtype=torch.long)
+        torch.Tensor(X_train),
+        torch.tensor(y_train, dtype=torch.long),
     )
     test_dataset = TensorDataset(
-        torch.Tensor(X_test), torch.tensor(y_test, dtype=torch.long)
+        torch.Tensor(X_test),
+        torch.tensor(y_test, dtype=torch.long),
     )
 
     loaders = {
         "train": train_dataset,
         "test": DataLoader(
-            test_dataset, batch_size=batch_size, shuffle=False, num_workers=1
+            test_dataset,
+            batch_size=batch_size,
+            shuffle=False,
+            num_workers=1,
         ),
     }
     return loaders
@@ -576,7 +673,9 @@ def load_hcv(seed, train_prop=0.8, batch_size=64):
     y = data["Category"].apply(lambda x: int(x[0]))
     X = data.drop("Category", axis=1)
     one_hot = pd.get_dummies(
-        X["Sex"], prefix="Sex", drop_first=True
+        X["Sex"],
+        prefix="Sex",
+        drop_first=True,
     )  # onehotencode categorical column
     X = X.drop("Sex", axis=1)
     X = X.join(one_hot)
@@ -585,7 +684,10 @@ def load_hcv(seed, train_prop=0.8, batch_size=64):
     X, y = X.to_numpy(), y.to_numpy()
 
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, train_size=train_prop, random_state=seed
+        X,
+        y,
+        train_size=train_prop,
+        random_state=seed,
     )
 
     X_scaler = StandardScaler()
@@ -593,16 +695,21 @@ def load_hcv(seed, train_prop=0.8, batch_size=64):
     X_test = X_scaler.transform(X_test)
 
     train_dataset = TensorDataset(
-        torch.Tensor(X_train), torch.tensor(y_train, dtype=torch.long)
+        torch.Tensor(X_train),
+        torch.tensor(y_train, dtype=torch.long),
     )
     test_dataset = TensorDataset(
-        torch.Tensor(X_test), torch.tensor(y_test, dtype=torch.long)
+        torch.Tensor(X_test),
+        torch.tensor(y_test, dtype=torch.long),
     )
 
     loaders = {
         "train": train_dataset,
         "test": DataLoader(
-            test_dataset, batch_size=batch_size, shuffle=False, num_workers=1
+            test_dataset,
+            batch_size=batch_size,
+            shuffle=False,
+            num_workers=1,
         ),
     }
     return loaders
@@ -614,7 +721,9 @@ def load_tumor(seed, train_prop=0.8, batch_size=64):
     X = data.drop(0, axis=1)
     for var in X.columns:
         one_hot = pd.get_dummies(
-            X[var], prefix=var, drop_first=True
+            X[var],
+            prefix=var,
+            drop_first=True,
         )  # onehotencode categorical column
         X = X.drop(var, axis=1)
         X = X.join(one_hot)
@@ -622,7 +731,10 @@ def load_tumor(seed, train_prop=0.8, batch_size=64):
     X, y = X.to_numpy(), y.to_numpy()
 
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, train_size=train_prop, random_state=seed
+        X,
+        y,
+        train_size=train_prop,
+        random_state=seed,
     )
 
     X_scaler = StandardScaler()
@@ -630,16 +742,21 @@ def load_tumor(seed, train_prop=0.8, batch_size=64):
     X_test = X_scaler.transform(X_test)
 
     train_dataset = TensorDataset(
-        torch.Tensor(X_train), torch.tensor(y_train, dtype=torch.long)
+        torch.Tensor(X_train),
+        torch.tensor(y_train, dtype=torch.long),
     )
     test_dataset = TensorDataset(
-        torch.Tensor(X_test), torch.tensor(y_test, dtype=torch.long)
+        torch.Tensor(X_test),
+        torch.tensor(y_test, dtype=torch.long),
     )
 
     loaders = {
         "train": train_dataset,
         "test": DataLoader(
-            test_dataset, batch_size=batch_size, shuffle=False, num_workers=1
+            test_dataset,
+            batch_size=batch_size,
+            shuffle=False,
+            num_workers=1,
         ),
     }
     return loaders
@@ -654,7 +771,9 @@ def load_soybean(seed, train_prop=0.8, batch_size=64):
     X = data.drop(0, axis=1)
     for var in X.columns:
         one_hot = pd.get_dummies(
-            X[var], prefix=f"dum_{var}", drop_first=True
+            X[var],
+            prefix=f"dum_{var}",
+            drop_first=True,
         )  # onehotencode categorical column
         X = X.drop(var, axis=1)
         X = X.join(one_hot)
@@ -662,7 +781,10 @@ def load_soybean(seed, train_prop=0.8, batch_size=64):
     X, y = X.to_numpy(), y.to_numpy()
 
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, train_size=train_prop, random_state=seed
+        X,
+        y,
+        train_size=train_prop,
+        random_state=seed,
     )
 
     X_scaler = StandardScaler()
@@ -670,16 +792,21 @@ def load_soybean(seed, train_prop=0.8, batch_size=64):
     X_test = X_scaler.transform(X_test)
 
     train_dataset = TensorDataset(
-        torch.Tensor(X_train), torch.tensor(y_train, dtype=torch.long)
+        torch.Tensor(X_train),
+        torch.tensor(y_train, dtype=torch.long),
     )
     test_dataset = TensorDataset(
-        torch.Tensor(X_test), torch.tensor(y_test, dtype=torch.long)
+        torch.Tensor(X_test),
+        torch.tensor(y_test, dtype=torch.long),
     )
 
     loaders = {
         "train": train_dataset,
         "test": DataLoader(
-            test_dataset, batch_size=batch_size, shuffle=False, num_workers=1
+            test_dataset,
+            batch_size=batch_size,
+            shuffle=False,
+            num_workers=1,
         ),
     }
     return loaders
@@ -695,14 +822,19 @@ def load_australian(seed, train_prop=0.8, batch_size=64):
     X = data.drop(14, axis=1)
     for var in [0, 3, 4, 5, 7, 8, 9, 10, 11]:
         one_hot = pd.get_dummies(
-            X[var], prefix=var, drop_first=True
+            X[var],
+            prefix=var,
+            drop_first=True,
         )  # onehotencode categorical column
         X = X.drop(var, axis=1)
         X = X.join(one_hot)
     X, y = X.to_numpy(), y.to_numpy()
 
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, train_size=train_prop, random_state=seed
+        X,
+        y,
+        train_size=train_prop,
+        random_state=seed,
     )
 
     X_scaler = StandardScaler()
@@ -710,16 +842,21 @@ def load_australian(seed, train_prop=0.8, batch_size=64):
     X_test = X_scaler.transform(X_test)
 
     train_dataset = TensorDataset(
-        torch.Tensor(X_train), torch.tensor(y_train, dtype=torch.long)
+        torch.Tensor(X_train),
+        torch.tensor(y_train, dtype=torch.long),
     )
     test_dataset = TensorDataset(
-        torch.Tensor(X_test), torch.tensor(y_test, dtype=torch.long)
+        torch.Tensor(X_test),
+        torch.tensor(y_test, dtype=torch.long),
     )
 
     loaders = {
         "train": train_dataset,
         "test": DataLoader(
-            test_dataset, batch_size=batch_size, shuffle=False, num_workers=1
+            test_dataset,
+            batch_size=batch_size,
+            shuffle=False,
+            num_workers=1,
         ),
     }
     return loaders
@@ -732,14 +869,19 @@ def load_entrance(seed, train_prop=0.8, batch_size=64):
     X = data.drop(0, axis=1)
     for var in X.columns:
         one_hot = pd.get_dummies(
-            X[var], prefix=var, drop_first=True
+            X[var],
+            prefix=var,
+            drop_first=True,
         )  # onehotencode categorical column
         X = X.drop(var, axis=1)
         X = X.join(one_hot)
     X, y = X.to_numpy(), y.to_numpy()
 
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, train_size=train_prop, random_state=seed
+        X,
+        y,
+        train_size=train_prop,
+        random_state=seed,
     )
 
     X_scaler = StandardScaler()
@@ -747,16 +889,21 @@ def load_entrance(seed, train_prop=0.8, batch_size=64):
     X_test = X_scaler.transform(X_test)
 
     train_dataset = TensorDataset(
-        torch.Tensor(X_train), torch.tensor(y_train, dtype=torch.long)
+        torch.Tensor(X_train),
+        torch.tensor(y_train, dtype=torch.long),
     )
     test_dataset = TensorDataset(
-        torch.Tensor(X_test), torch.tensor(y_test, dtype=torch.long)
+        torch.Tensor(X_test),
+        torch.tensor(y_test, dtype=torch.long),
     )
 
     loaders = {
         "train": train_dataset,
         "test": DataLoader(
-            test_dataset, batch_size=batch_size, shuffle=False, num_workers=1
+            test_dataset,
+            batch_size=batch_size,
+            shuffle=False,
+            num_workers=1,
         ),
     }
     return loaders
@@ -771,14 +918,19 @@ def load_thoracic(seed, train_prop=0.8, batch_size=64):
     X[2] = np.log(X[2] + 1)
     for var in [0, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]:
         one_hot = pd.get_dummies(
-            X[var], prefix=var, drop_first=True
+            X[var],
+            prefix=var,
+            drop_first=True,
         )  # onehotencode categorical column
         X = X.drop(var, axis=1)
         X = X.join(one_hot)
     X, y = X.to_numpy(), y.to_numpy()
 
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, train_size=train_prop, random_state=seed
+        X,
+        y,
+        train_size=train_prop,
+        random_state=seed,
     )
 
     X_scaler = StandardScaler()
@@ -786,16 +938,21 @@ def load_thoracic(seed, train_prop=0.8, batch_size=64):
     X_test = X_scaler.transform(X_test)
 
     train_dataset = TensorDataset(
-        torch.Tensor(X_train), torch.tensor(y_train, dtype=torch.long)
+        torch.Tensor(X_train),
+        torch.tensor(y_train, dtype=torch.long),
     )
     test_dataset = TensorDataset(
-        torch.Tensor(X_test), torch.tensor(y_test, dtype=torch.long)
+        torch.Tensor(X_test),
+        torch.tensor(y_test, dtype=torch.long),
     )
 
     loaders = {
         "train": train_dataset,
         "test": DataLoader(
-            test_dataset, batch_size=batch_size, shuffle=False, num_workers=1
+            test_dataset,
+            batch_size=batch_size,
+            shuffle=False,
+            num_workers=1,
         ),
     }
     return loaders

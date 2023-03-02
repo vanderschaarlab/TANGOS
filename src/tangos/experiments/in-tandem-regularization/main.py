@@ -1,21 +1,22 @@
-import os
-import torch
-import itertools
 import argparse
-import json
 import copy
-from pathlib import Path
-import numpy as np
+import itertools
+import json
+import os
 import random
-import torch.nn as nn
-from torch import optim
-from sklearn.model_selection import KFold
-from tangos.losses import parameter_schedule, attr_loss, MSE
-from tangos.models import UCI_MLP
-from tangos.regularizers import l1, add_input_noise, mixup_data, mixup_criterion
-from tangos import load_data
-
 import warnings
+from pathlib import Path
+
+import numpy as np
+import torch
+import torch.nn as nn
+from sklearn.model_selection import KFold
+from torch import optim
+
+from tangos import load_data
+from tangos.losses import MSE, attr_loss, parameter_schedule
+from tangos.models import UCI_MLP
+from tangos.regularizers import add_input_noise, l1, mixup_criterion, mixup_data
 
 warnings.filterwarnings("ignore")
 
@@ -48,7 +49,10 @@ def train_epoch(
 
         if (params_ls["lambda_1_curr"] > 0) or (params_ls["lambda_2_curr"] > 0):
             sparsity_loss, correlation_loss = attr_loss(
-                model, data, device=device, subsample=params_ls["subsample"]
+                model,
+                data,
+                device=device,
+                subsample=params_ls["subsample"],
             )
             reg_loss = (
                 params_ls["lambda_1_curr"] * sparsity_loss
@@ -60,7 +64,10 @@ def train_epoch(
 
         elif regulariser == "mixup":
             X_mixup, y_a, y_b, lam = mixup_data(
-                data, label, alpha=params["alpha"], device=device
+                data,
+                label,
+                alpha=params["alpha"],
+                device=device,
             )
             output_mixup, _ = model(X_mixup)
             reg_loss = mixup_criterion(loss_func, output_mixup, y_a, y_b, lam)
@@ -166,16 +173,27 @@ def save_results(results, file_name):
 
 
 def run_fold(
-    fold_name, model, trainloader, valloader, config, config_ls, config_dataset, seed
+    fold_name,
+    model,
+    trainloader,
+    valloader,
+    config,
+    config_ls,
+    config_dataset,
+    seed,
 ):
     tag, dataset, regulariser, params, fold = fold_name.split(":")
     loss_func = MSE if config_dataset["type"] == "regression" else nn.CrossEntropyLoss()
     l2_weight = config["weight"] if regulariser == "l2" else 0
     optimiser = optim.Adam(
-        model.parameters(), lr=config_dataset["lr"], weight_decay=l2_weight
+        model.parameters(),
+        lr=config_dataset["lr"],
+        weight_decay=l2_weight,
     )
     parameter_scheduler = parameter_schedule(
-        config_ls["lambda_1"], config_ls["lambda_2"], config_ls["param_schedule"]
+        config_ls["lambda_1"],
+        config_ls["lambda_2"],
+        config_ls["param_schedule"],
     )
     best_val_loss = np.inf
     last_update = 0
@@ -232,7 +250,10 @@ def run_cv(
         torch.manual_seed(seed)
         np.random.seed(seed)
         trainloader, valloader = ids_to_dataloader_split(
-            loaders["train"], train_ids, val_ids, seed=seed
+            loaders["train"],
+            train_ids,
+            val_ids,
+            seed=seed,
         )
         fold_name = run_name + f":{fold}"
         model = UCI_MLP(
@@ -293,7 +314,12 @@ def run_experiment(seeds: list, tag: str):
     for seed in seeds:
         # initialise results file
         init_results(
-            tag, seed, datasets, config_regs, latent_sniper_regs, overwrite=True
+            tag,
+            seed,
+            datasets,
+            config_regs,
+            latent_sniper_regs,
+            overwrite=True,
         )
         for dataset in datasets:
             for regulariser in regularisers:
@@ -322,7 +348,9 @@ def run_experiment(seeds: list, tag: str):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "-seeds", default=[0], help="Set of seeds to use for experiments"
+        "-seeds",
+        default=[0],
+        help="Set of seeds to use for experiments",
     )
     parser.add_argument("-tag", default="tag", help="Tag name for set of experiments")
     args = parser.parse_args()
