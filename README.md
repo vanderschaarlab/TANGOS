@@ -23,7 +23,7 @@ Ensure PYTHONPATH is also set to the root folder.
 ```
 export PYTHONPATH="/your/path/to/TANGOS"
 ```
-Using conda, create and activate a new environment. 
+Using conda, create and activate a new environment.
 ```
 conda create -n <environment name> pip python
 conda activate <environment name>
