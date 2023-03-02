@@ -31,6 +31,7 @@ jobs:
       - name: Install dependencies
         run: |
             pip install --upgrade pip
+            pip install functorch==1.13.1
             pip install .
             pip install .[testing]
             python -m pip install ipykernel
