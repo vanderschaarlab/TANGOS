@@ -57,6 +57,7 @@ MANIFEST
 # Project Specific
 # contents directory contents
 src/tangos/experiments/**/content/*
+*.pdf
 
 
 # Data
