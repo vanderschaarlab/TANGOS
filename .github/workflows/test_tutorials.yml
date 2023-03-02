@@ -36,4 +36,4 @@ jobs:
             python -m pip install ipykernel
             python -m ipykernel install --user
       - name: Run the tutorials
-        run: python test/nb_test.py --nb_dir tutorial/
+        run: python tests/nb_test.py --nb_dir tutorial/
