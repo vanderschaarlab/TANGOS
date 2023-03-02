@@ -19,15 +19,18 @@ Clone this repository and navigate to the root folder.
 git clone https://github.com/alanjeffares/TANGOS.git
 cd TANGOS
 ```
-Ensure PYTHONPATH is also set to the root folder.
-```
-export PYTHONPATH="/your/path/to/TANGOS"
-```
+
 Using conda, create and activate a new environment.
 ```
 conda create -n <environment name> pip python
 conda activate <environment name>
 ```
+
+Install from source:
+```
+pip install .
+```
+
 Then install the repository requirements.
 ```
 pip install -r requirements.txt
@@ -51,21 +54,22 @@ Then set the path to your local data folder in `src/data_config.json`.
 These folders are associated with the commented experiments from the paper.
 ```
 └── src
-    └── experiments
-        ├── behavior-analysis            # TANGOS Behavior Analysis.
-        ├── compute                      # Approximation and Algorithm.
-        ├── in-tandem-regularization     # Generalisaton: In Tandem Regularization.
-        ├── larger-data                  # Performance With Increasing Data Size.
-        └── stand-alone-regularization   # Generalization: Stand-Alone Regularization.
+    └── tangos
+        └── experiments
+            ├── behavior-analysis            # TANGOS Behavior Analysis.
+            ├── compute                      # Approximation and Algorithm.
+            ├── in-tandem-regularization     # Generalisaton: In Tandem Regularization.
+            ├── larger-data                  # Performance With Increasing Data Size.
+            └── stand-alone-regularization   # Generalization: Stand-Alone Regularization.
 ```
 
 The main experiments can be run by navigating to the root folder and running the following command.
 
-```python src/experiments/<experiment name>/main.py```
+```python src/tangos/experiments/<experiment name>/main.py```
 
 Results and hyperparameters of these experiments are saved in json format to the results folder.
 
-```src/experiments/<experiment name>/results```
+```src/tangos/experiments/<experiment name>/results```
 
 The behavior analysis and compute experiments are included in ```.ipynb``` notebooks with instructions included. Please note that all jupyter notebooks are self contained and designed to be run in colab by clicking the link at the top of each notebook (e.g. [![open in colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/alanjeffares/TANGOS/blob/main/TANGOS_quickstart.ipynb)).
 
